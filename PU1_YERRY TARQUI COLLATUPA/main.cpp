@@ -12,6 +12,8 @@ struct Figura {
 };
 
 vector<Figura> figuras;
+vector<pair<int,int>> puntosTemp;
+Alg actual=LINE_DIRECT;
 
 void dibujarPunto(int x,int y){
     glBegin(GL_POINTS);
@@ -66,13 +68,35 @@ void elipsePM(int xc,int yc,int rx,int ry){
     }
 }
 
+void dibujarFiguras(){
+    for(auto &f:figuras){
+        glColor3f(0,0,0);
+        glPointSize(2.0);
+        if(f.alg==LINE_DIRECT) lineaDirecta(f.x1,f.y1,f.x2,f.y2);
+        else if(f.alg==LINE_DDA) lineaDDA(f.x1,f.y1,f.x2,f.y2);
+        else if(f.alg==CIRCLE_PM) circuloPM(f.x1,f.y1,f.x2);
+        else if(f.alg==ELLIPSE_PM) elipsePM(f.x1,f.y1,f.x2,f.y2);
+    }
+}
+
 void display(){
     glClear(GL_COLOR_BUFFER_BIT);
-    glColor3f(0,0,0);
-    glPointSize(2.0);
-    lineaDirecta(100,100,700,500);
-    circuloPM(400,300,100);
+    dibujarFiguras();
     glFlush();
+}
+
+void mouse(int button,int state,int x,int y){
+    if(button==GLUT_LEFT_BUTTON && state==GLUT_DOWN){
+        puntosTemp.push_back({x,600-y});
+        if(puntosTemp.size()==2){
+            Figura f; f.alg=actual;
+            f.x1=puntosTemp[0].first; f.y1=puntosTemp[0].second;
+            f.x2=puntosTemp[1].first; f.y2=puntosTemp[1].second;
+            figuras.push_back(f);
+            puntosTemp.clear();
+            glutPostRedisplay();
+        }
+    }
 }
 
 void init(){
@@ -85,9 +109,10 @@ int main(int argc,char** argv){
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
     glutInitWindowSize(800,600);
     glutInitWindowPosition(100,100);
-    glutCreateWindow("Commit 2 - Algoritmos");
+    glutCreateWindow("Commit 3 - Mouse");
     init();
     glutDisplayFunc(display);
+    glutMouseFunc(mouse);
     glutMainLoop();
     return 0;
 }
