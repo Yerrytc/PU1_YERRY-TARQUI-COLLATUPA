@@ -875,3 +875,10 @@
 1526093414 c:\program files\codeblocks\mingw\x86_64-w64-mingw32\include\gl\glu.h
 	<GL/gl.h>
 
+1757994835 source:d:\upt\v ciclo\dise—o y modelamiento virtual\pu1_yerry tarqui collatupa\pu1_yerry tarqui collatupa\src\main.cpp
+	<GL/glut.h>
+	<cmath>
+	<vector>
+	<fstream>
+	<string>
+
