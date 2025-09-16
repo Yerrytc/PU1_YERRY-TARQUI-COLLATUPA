@@ -1,4 +1,4 @@
-# Proyecto de Graficación
+# Proyecto de Unidad 1
 
 *COMPILACION:*
 Abrir Code::Blocks, abrir proyecto en `src/`, Build → Build and Run.
