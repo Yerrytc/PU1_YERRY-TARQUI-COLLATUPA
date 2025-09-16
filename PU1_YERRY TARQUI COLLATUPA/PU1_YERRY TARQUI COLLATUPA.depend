@@ -1,8 +1,9 @@
 # depslib dependency file v1.0
-1757945052 source:d:\upt\v ciclo\dise—o y modelamiento virtual\pu1_yerry tarqui collatupa\pu1_yerry tarqui collatupa\main.cpp
+1757991496 source:d:\upt\v ciclo\dise—o y modelamiento virtual\pu1_yerry tarqui collatupa\pu1_yerry tarqui collatupa\main.cpp
 	<GL/glut.h>
 	<cmath>
 	<vector>
+	<cstdio>
 
 1426367728 c:\program files\codeblocks\mingw\x86_64-w64-mingw32\include\gl\glut.h
 	"freeglut_std.h"
