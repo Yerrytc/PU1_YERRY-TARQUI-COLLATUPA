@@ -5,7 +5,7 @@
 #include <string>
 using namespace std;
 
-enum Alg { LINE_DIRECT, LINE_DDA, CIRCLE_INC, CIRCLE_PM, ELLIPSE_PM};
+enum Alg { LINEA_DIRECTA, LINEA_DDA, CIRCULO_INC, CIRCULO_PM, ELIPSE_PM };
 
 struct Figura {
     Alg alg;
@@ -16,7 +16,7 @@ struct Figura {
 
 vector<Figura> figuras;
 int winW = 800, winH = 600;
-Alg algoritmoActual = LINE_DIRECT;
+Alg algoritmoActual = LINEA_DIRECTA;
 float colorActual[3] = {0, 0, 0};
 float grosorActual = 1.0f;
 int clickCount = 0;
@@ -191,18 +191,18 @@ void display(){
     if(showAxes) drawAxes();
     for(auto &f: figuras){
         switch(f.alg){
-            case LINE_DIRECT: drawLineDirect(f.x1,f.y1,f.x2,f.y2,f.color[0],f.color[1],f.color[2],f.grosor); break;
-            case LINE_DDA: drawLineDDA(f.x1,f.y1,f.x2,f.y2,f.color[0],f.color[1],f.color[2],f.grosor); break;
-            case CIRCLE_PM:{
+            case LINEA_DIRECTA: drawLineDirect(f.x1,f.y1,f.x2,f.y2,f.color[0],f.color[1],f.color[2],f.grosor); break;
+            case LINEA_DDA: drawLineDDA(f.x1,f.y1,f.x2,f.y2,f.color[0],f.color[1],f.color[2],f.grosor); break;
+            case CIRCULO_PM:{
                 int dx=f.x2-f.x1, dy=f.y2-f.y1;
                 int r=(int)round(sqrt(dx*dx+dy*dy));
                 drawCirclePM(f.x1,f.y1,r,f.color[0],f.color[1],f.color[2],f.grosor);
             } break;
-            case ELLIPSE_PM:{
+            case ELIPSE_PM:{
                 int rx=abs(f.x2-f.x1), ry=abs(f.y2-f.y1);
                 drawEllipsePM(f.x1,f.y1,rx,ry,f.color[0],f.color[1],f.color[2],f.grosor);
             } break;
-            case CIRCLE_INC: {
+            case CIRCULO_INC: {
                 int dx = f.x2 - f.x1, dy = f.y2 - f.y1;
                 int r = (int)round(sqrt(dx*dx + dy*dy));
                 drawCircleInc(f.x1, f.y1, r, f.color[0], f.color[1], f.color[2], f.grosor);
@@ -215,7 +215,6 @@ void display(){
         string coords = "X=" + to_string(mouseX) + " Y=" + to_string(mouseY);
         drawText(10,winH-20,coords);
     }
-
     glFlush();
 }
 
@@ -287,11 +286,11 @@ void menuAyuda(int opcion) {
 
 void createMenu(){
     int menuDibujo=glutCreateMenu(menuAlg);
-    glutAddMenuEntry("Recta Directa",LINE_DIRECT);
-    glutAddMenuEntry("Recta DDA",LINE_DDA);
-    glutAddMenuEntry("Circulo Incremental", CIRCLE_INC);
-    glutAddMenuEntry("Circulo PM",CIRCLE_PM);
-    glutAddMenuEntry("Elipse PM",ELLIPSE_PM);
+    glutAddMenuEntry("Recta Directa",LINEA_DIRECTA);
+    glutAddMenuEntry("Recta DDA",LINEA_DDA);
+    glutAddMenuEntry("Circulo Incremental", CIRCULO_INC);
+    glutAddMenuEntry("Circulo PM",CIRCULO_PM);
+    glutAddMenuEntry("Elipse PM",ELIPSE_PM);
 
     int menuColorId=glutCreateMenu(menuColor);
     glutAddMenuEntry("Negro",0);
