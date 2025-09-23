@@ -80,32 +80,39 @@ void putPixel(int x,int y,float r,float g,float b,float grosor){
     glEnd();
 }
 
-void drawLineDirect(int x1,int y1,int x2,int y2,float r,float g,float b,float grosor){
-    if(x1==x2){
-        for(int y=min(y1,y2); y<=max(y1,y2); y++) putPixel(x1,y,r,g,b,grosor);
-        return;
-    }
-    float m=(float)(y2-y1)/(x2-x1);
-    if(fabs(m)<=1){
-        float b0 = y1 - m*x1;
-        for(int x=min(x1,x2); x<=max(x1,x2); x++) putPixel(x,(int)round(m*x+b0),r,g,b,grosor);
-    } else {
-        for(int y=min(y1,y2); y<=max(y1,y2); y++) putPixel((int)round((y-y1)/m+x1),y,r,g,b,grosor);
+void drawLineaDirecta(int xi, int yi, int xf, int yf, float r, float g, float b, float grosor) {
+    float m = (float)(yf - yi) / (float)(xf - xi);
+    float b0 = yi - m * xi;
+
+    for (int x = xi; x <= xf; x++) {
+        int y = (int)round(m * x + b0);
+        putPixel(x, y, r, g, b, grosor);
     }
 }
 
-void drawLineDDA(int x1,int y1,int x2,int y2,float r,float g,float b,float grosor){
-    int dx=x2-x1, dy=y2-y1;
-    int steps=max(abs(dx),abs(dy));
-    float xInc=dx/(float)steps, yInc=dy/(float)steps;
-    float x=x1, y=y1;
-    for(int i=0;i<=steps;i++){
-        putPixel((int)round(x),(int)round(y),r,g,b,grosor);
-        x+=xInc; y+=yInc;
+
+void drawLineaDDA(int xi, int yi, int xf, int yf, float r, float g, float b, float grosor) {
+    int dx = xf - xi;
+    int dy = yf - yi;
+    int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+    float x = xi;
+    float y = yi;
+    float ax = dx / (float)steps;
+    float ay = dy / (float)steps;
+
+    putPixel((int)round(x), (int)round(y), r, g, b, grosor);
+
+    for (int k = 1; k <= steps; k++) {
+        x += ax;
+        y += ay;
+        putPixel((int)round(x), (int)round(y), r, g, b, grosor);
     }
+
+    glFlush();
 }
 
-void drawCircleInc(int xc, int yc, int r, float cr, float cg, float cb, float grosor) {
+
+void drawCirculoInc(int xc, int yc, int r, float cr, float cg, float cb, float grosor) {
     float fi = 1;
     float dalfa = 1.0f / r;
     float ct = cos(dalfa);
@@ -130,7 +137,7 @@ void drawCircleInc(int xc, int yc, int r, float cr, float cg, float cb, float gr
 }
 
 
-void drawCirclePM(int xc,int yc,int r,float cr,float cg,float cb,float grosor){
+void drawCirculoPM(int xc,int yc,int r,float cr,float cg,float cb,float grosor){
     int x=0,y=r,p=1-r;
     while(x<=y){
         putPixel(xc+x,yc+y,cr,cg,cb,grosor);
@@ -146,7 +153,7 @@ void drawCirclePM(int xc,int yc,int r,float cr,float cg,float cb,float grosor){
     }
 }
 
-void drawEllipsePM(int xc,int yc,int rx,int ry,float cr,float cg,float cb,float grosor){
+void drawElipsePM(int xc,int yc,int rx,int ry,float cr,float cg,float cb,float grosor){
     int x=0,y=ry;
     long rx2=rx*rx, ry2=ry*ry;
     long p=ry2-(rx2*ry)+rx2/4;
@@ -191,21 +198,21 @@ void display(){
     if(showAxes) drawAxes();
     for(auto &f: figuras){
         switch(f.alg){
-            case LINEA_DIRECTA: drawLineDirect(f.x1,f.y1,f.x2,f.y2,f.color[0],f.color[1],f.color[2],f.grosor); break;
-            case LINEA_DDA: drawLineDDA(f.x1,f.y1,f.x2,f.y2,f.color[0],f.color[1],f.color[2],f.grosor); break;
+            case LINEA_DIRECTA: drawLineaDirecta(f.x1,f.y1,f.x2,f.y2,f.color[0],f.color[1],f.color[2],f.grosor); break;
+            case LINEA_DDA: drawLineaDDA(f.x1,f.y1,f.x2,f.y2,f.color[0],f.color[1],f.color[2],f.grosor); break;
             case CIRCULO_PM:{
                 int dx=f.x2-f.x1, dy=f.y2-f.y1;
                 int r=(int)round(sqrt(dx*dx+dy*dy));
-                drawCirclePM(f.x1,f.y1,r,f.color[0],f.color[1],f.color[2],f.grosor);
+                drawCirculoPM(f.x1,f.y1,r,f.color[0],f.color[1],f.color[2],f.grosor);
             } break;
             case ELIPSE_PM:{
                 int rx=abs(f.x2-f.x1), ry=abs(f.y2-f.y1);
-                drawEllipsePM(f.x1,f.y1,rx,ry,f.color[0],f.color[1],f.color[2],f.grosor);
+                drawElipsePM(f.x1,f.y1,rx,ry,f.color[0],f.color[1],f.color[2],f.grosor);
             } break;
             case CIRCULO_INC: {
                 int dx = f.x2 - f.x1, dy = f.y2 - f.y1;
                 int r = (int)round(sqrt(dx*dx + dy*dy));
-                drawCircleInc(f.x1, f.y1, r, f.color[0], f.color[1], f.color[2], f.grosor);
+                drawCirculoInc(f.x1, f.y1, r, f.color[0], f.color[1], f.color[2], f.grosor);
             } break;
 
         }
@@ -349,4 +356,3 @@ int main(int argc,char**argv){
     glutMainLoop();
     return 0;
 }
-
